@@ -1,106 +1,39 @@
-;; startup
-(setq inhibit-startup-message t 
-      visible-bell t) 
+;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; Commentary:
 
-;; Turn off some unneeded UI elements
-(menu-bar-mode -1)
+;; This file bootstraps the configuration, which is divided into
+;; a number of other files.
 
-;; Display line numbers in every buffer
-(global-display-line-numbers-mode 1)
+;;; Code:
 
-;; Load the Modus Vivendi dark theme
-(load-theme 'modus-vivendi t)
+;; Produce backtraces when errors occur: can be helpful to diagnose startup issues
+;;(setq debug-on-error t)
 
-;;remenbering recent edited files
-(recentf-mode 1)
+(let ((minver "27.1"))
+  (when (version< emacs-version minver)
+    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+(when (version< emacs-version "28.1")
+  (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
 
-;; Save what you enter into minibuffers prompts
-(setq history-length 25)
-(savehist-mode 1)
+;; 设定源码加载路径
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
-;; Remember and restore the last cursor locatopn of opened files
-(save-place-mode 1)
-
-;; Move customization variables to a seperate file and load it
+;; 加载自定义变量文件
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 
-;; Initialize package sources
-(require 'package)
+;; 加载各个模块
+(require 'init-core)       ;; 核心设置
+(require 'init-packages)   ;; 包管理设置
+(require 'init-ui)         ;; 界面相关设置
+(require 'init-editor)     ;; 编辑器行为设置
+(require 'init-completion) ;; 补全相关设置
+(require 'init-lsp)        ;; LSP相关设置
+(require 'init-org)        ;; Org mode设置
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
-
-;;display command log
-(use-package command-log-mode)
-
-;;ivy package
-(use-package ivy
-  :diminish
-  :defer 1
-  :demand
-  :hook (after-init . ivy-mode)
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t
-	ivy-initial-inputs-alist nil
-	ivy-count-format "%d/%d "
-	enable-recursive-minibuffers t
-	ivy-re-builders-alist '((t . ivy--regex-ignore-order))))  
-
-
-(use-package counsel
-  :after (ivy)
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file)
-	 ("C-c f" . counsel-recentf)
-	 ("C-c g" . counsel-git)))
-
-(use-package swiper
-  :after ivy
-  :bind (("C-s" . swiper)
-	 ("C-r" . swiper-isearch-backward))
-  :config(setq swiper-action-recenter t
-	       swiper-include-line-number-in-search t))
-
-;; modeline
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
-
-;;自动补全
-(use-package company
-  :diminish
-  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
-  :init (add-hook 'after-init-hook 'global-company-mode)
-  :config
-  (setq company-minimum-prefix-length 1
-        company-show-quick-access t))
-
-;; LSP-setting
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (c-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-
-
-(use-package org)
-
+;; Local Variables:
+;; coding: utf-8
+;; no-byte-compile: t
+;; End:
+;;; init.el ends here
 
