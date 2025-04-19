@@ -22,5 +22,16 @@
 ;; 指令日志（注释掉了）
 ;; (use-package command-log-mode)
 
+;;ace-window 对 C-x o 重新绑定，使用时可以为每个 window 编个号，用编号进行跳转
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . 'ace-window)))
+
+;; which-key - 显示可用的键绑定
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
 (provide 'init-packages)
 ;;; init-packages.el ends here

@@ -12,11 +12,18 @@
 
 ;; 加载Modus Vivendi深色主题
 (load-theme 'modus-vivendi t)
+(set-face-background 'default "unspecified-bg")
+(defun make-bg-transparent ()
+  "Make background transparent."
+  (set-face-background 'default "unspecified-bg"))
+
+(advice-add 'load-theme :after #'make-bg-transparent)
 
 ;; Doom模式栏
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
+
 
 (provide 'init-ui)
 ;;; init-ui.el ends here
