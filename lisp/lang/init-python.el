@@ -8,19 +8,13 @@
 (use-package python
   :ensure t
   :config
-  (setq python-shell-interpreter "~/venvs/quant-env/bin/python")  
-  ;; 使用IPython作为REPL (如果需要)
-  (when (executable-find "~/venvs/quant-env/bin/ipython")
-    (setq python-shell-interpreter "~/venvs/quant-env/bin/ipython"
-          python-shell-interpreter-args "-i --simple-prompt")))
+  )
 
 ;; 虚拟环境管理
 (use-package pyvenv
   :ensure t
   :config
-  (pyvenv-mode 1)
-  ;; 启动时自动激活你的虚拟环境
-  (pyvenv-activate "~/venvs/quant-env"))
+  (pyvenv-mode 1))
 
 ;; LSP服务：pyright
 (use-package lsp-pyright
