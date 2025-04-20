@@ -4,3 +4,13 @@
 places
 tramp
 tutorial/
+
+.DS_Store
+auto-save-list/
+elpa/
+history
+recentf
+request/
+*~
+
+
