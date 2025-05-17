@@ -27,11 +27,5 @@
   :ensure t
   :bind (("C-x o" . 'ace-window)))
 
-;; which-key - 显示可用的键绑定
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
-
 (provide 'init-packages)
 ;;; init-packages.el ends here

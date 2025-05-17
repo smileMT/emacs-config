@@ -4,35 +4,48 @@
 
 ;;; Code:
 
-;; Python基本设置
+;; ========== Python 基础模式 ==========
 (use-package python
   :ensure t
-  :config
-  )
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode))
 
-;; 虚拟环境管理
+
+;; ========== 虚拟环境管理 ==========
 (use-package pyvenv
   :ensure t
   :config
   (pyvenv-mode 1))
 
-;; LSP服务：pyright
+
+;; ========== LSP 支持（Pyright） ==========
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :hook (python-mode . lsp)
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-enable-symbol-highlighting t)
+  (setq lsp-idle-delay 0.5))
+
 (use-package lsp-pyright
   :ensure t
+  :after lsp-mode
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp))))
-  :config
-  ;; 设置 pyright 虚拟环境搜索路径（不是必须的，如果已用 pyvenv-activate）
-  ;;(setq lsp-pyright-venv-path "~/venvs/quant-env"))
 
-;; Jupyter 支持
+
+;; ========== Jupyter Notebook 支持（EIN） ==========
 (use-package ein
   :ensure t
-  :commands (ein:login ein:notebook-open)
-  :init
-  (setq ein:jupyter-default-server-command "jupyter"
-        ein:completion-backend 'ein:use-company-backend))
+  :commands (ein:login ein:notebooklist-open ein:notebook-open)
+  :config
+  (setq ein:jupyter-default-notebook-directory "~/notebooks")
+  ;; 可选：自动登录（需配置 token）
+  ;; (setq ein:use-auto-complete t)
+  (require 'ein-notebook)
+  (require 'ein-subpackages))
 
 (provide 'init-python)
 ;;; init-python.el ends here
